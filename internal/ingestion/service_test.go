@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/emeinardus/daybrief/internal/rss"
+	"github.com/emeinardus/daybrief/internal/source"
 )
 
 type stubFetcher struct {
@@ -31,7 +32,10 @@ func TestLoadFeed(t *testing.T) {
 		</channel>
 	</rss>`)
 
-	service := NewService(&stubFetcher{data: input})
+	service := NewService(
+		&stubFetcher{data: input},
+		source.NewMemoryRegistry(nil),
+	)
 
 	articles, err := service.LoadFeed(
 		context.Background(),
@@ -57,7 +61,10 @@ func TestLoadFeed(t *testing.T) {
 
 func TestLoadFeedFetchError(t *testing.T) {
 	expectedErr := errors.New("network unavailable")
-	service := NewService(&stubFetcher{err: expectedErr})
+	service := NewService(
+		&stubFetcher{err: expectedErr},
+		source.NewMemoryRegistry(nil),
+	)
 
 	_, err := service.LoadFeed(
 		context.Background(),
@@ -70,9 +77,10 @@ func TestLoadFeedFetchError(t *testing.T) {
 }
 
 func TestLoadFeedInvalidXML(t *testing.T) {
-	service := NewService(&stubFetcher{
-		data: []byte("<rss><channel>"),
-	})
+	service := NewService(
+		&stubFetcher{data: []byte("<rss><channel>")},
+		source.NewMemoryRegistry(nil),
+	)
 
 	_, err := service.LoadFeed(
 		context.Background(),
