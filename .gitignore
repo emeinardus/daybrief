@@ -31,3 +31,24 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local configuration
+*.local
+config.local.*
+
+# Build artifacts
+/bin/
+/dist/
+/build/
+coverage.out
+
+# IDE and operating system files
+.idea/
+.DS_Store
+Thumbs.db
